@@ -18,6 +18,7 @@
 ini_set('default_charset', 'utf-8');
 require_once "Utility.class.inc";
 require_once "NDB_Config.class.inc";
+require_once "/opt/minc/minc-toolkit-config.php";
 
 $headers = array();
 
@@ -78,7 +79,7 @@ function initialize($minc_file)
 
     //for 4D (BOLD or DTI)
     if (count($order) == 4) {
-        $headers['time'] = extractDimensions("time", $minc_file);
+        $headers['time'] = extractDimension("time", $minc_file);
     }
 
     $headers['order'] = $order;
