@@ -19,7 +19,6 @@ function getQueryVariable(variable) {
 // BrainBrowser Volume Viewer.
 $(function() {
   "use strict";
-
   $(".button").button();
 
   /////////////////////////////////////
@@ -111,6 +110,7 @@ $(function() {
 
       img.src = canvas.toDataURL();
     });
+
 
     // Load a new model from a MINC file that the user has
     // selected.
@@ -518,6 +518,7 @@ $(function() {
         });
       });
 
+
       $.ajax({
           data: 'minc_id=' + minc_ids_arr[vol_id],
           url: 'AjaxHelper.php?Module=brainbrowser&script=getMincName.php',
@@ -716,29 +717,45 @@ $(function() {
 
     link = window.location.search;
 
-    minc_ids = getQueryVariable("minc_id");
-    if (minc_ids[0] === '[') {
-        // An array was passed. Get rid of the brackets and then split on ","
-        minc_ids = minc_ids.substring(1, minc_ids.length - 1);
-        minc_ids_arr = minc_ids.split(",");
 
-    } else {
-        // Only one passed
+    if (getQueryVariable("minc_location")) {
+
+        minc_ids = getQueryVariable("minc_location"); 
         minc_ids_arr = [minc_ids];
+  
     }
 
-    for (i = 0; i < minc_ids_arr.length; i += 1) {
 
+    else {
+
+        minc_ids = getQueryVariable("minc_id");
+        if (minc_ids[0] === '[') {
+
+            // An array was passed. Get rid of the brackets and then split on ","
+            minc_ids = minc_ids.substring(1, minc_ids.length - 1);
+            minc_ids_arr = minc_ids.split(",");
+
+        } else {
+
+            // Only one passed
+            minc_ids_arr = [minc_ids];
+        }
+    }
+
+
+
+    for (i = 0; i < minc_ids_arr.length; i += 1) {
         minc_volumes.push({
             type: 'minc',
-	    header_url: "AjaxHelper.php?Module=brainbrowser&script=minc.php&minc_id=" + minc_ids_arr[i] + "&minc_headers=true",
-	    raw_data_url: "AjaxHelper.php?Module=brainbrowser&script=minc.php&minc_id=" + minc_ids_arr[i] + "&raw_data=true",
+	    header_url: "AjaxHelper.php?Module=brainbrowser&script=minc.php&minc_location=" + minc_ids_arr[i] + "&minc_headers=true",
+	    raw_data_url: "AjaxHelper.php?Module=brainbrowser&script=minc.php&minc_location=" + minc_ids_arr[i] + "&raw_data=true",
             template: {
                 element_id: "volume-ui-template4d",
                 viewer_insert_class: "volume-viewer-display"
             }
         });
     }
+
 
     if (getQueryVariable("overlay") === "true") {
         bboptions.overlay = {
