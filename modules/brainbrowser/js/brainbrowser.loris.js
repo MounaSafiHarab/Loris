@@ -745,15 +745,29 @@ $(function() {
 
 
     for (i = 0; i < minc_ids_arr.length; i += 1) {
-        minc_volumes.push({
-            type: 'minc',
-	    header_url: "AjaxHelper.php?Module=brainbrowser&script=minc.php&minc_location=" + minc_ids_arr[i] + "&minc_headers=true",
-	    raw_data_url: "AjaxHelper.php?Module=brainbrowser&script=minc.php&minc_location=" + minc_ids_arr[i] + "&raw_data=true",
-            template: {
-                element_id: "volume-ui-template4d",
-                viewer_insert_class: "volume-viewer-display"
-            }
-        });
+
+        if (getQueryVariable("minc_location")) {
+            minc_volumes.push({
+                type: 'minc',
+	        header_url: "AjaxHelper.php?Module=brainbrowser&script=minc.php&minc_location=" + minc_ids_arr[i] + "&minc_headers=true",
+	        raw_data_url: "AjaxHelper.php?Module=brainbrowser&script=minc.php&minc_location=" + minc_ids_arr[i] + "&raw_data=true",
+                template: {
+                    element_id: "volume-ui-template4d",
+                    viewer_insert_class: "volume-viewer-display"
+                }
+            })
+        }
+        else {
+            minc_volumes.push({
+                type: 'minc',
+	        header_url: "AjaxHelper.php?Module=brainbrowser&script=minc.php&minc_id=" + minc_ids_arr[i] + "&minc_headers=true",
+	        raw_data_url: "AjaxHelper.php?Module=brainbrowser&script=minc.php&minc_id=" + minc_ids_arr[i] + "&raw_data=true",
+                template: {
+                    element_id: "volume-ui-template4d",
+                    viewer_insert_class: "volume-viewer-display"
+                }
+            })
+        }
     }
 
 
