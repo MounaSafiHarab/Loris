@@ -31,13 +31,10 @@ if (isset($_REQUEST['minc_location'])) {
 else {
     $minc_file = $DB->pselectOne($query, array('MincID' => $_REQUEST['minc_id']));
     $minc_file = getMincLocation() . $minc_file;
-    $minc_file = $DB->pselectOne($query, array('MincID' => $_REQUEST['minc_id']));
-    $minc_file = getMincLocation() . $minc_file;
 }
 
 $header      = $_REQUEST['minc_headers'];
 $header_data = $_REQUEST['raw_data'];
-
 if ($header_data) {
     passthru("minctoraw -byte -unsigned -normalize $minc_file");
 }
