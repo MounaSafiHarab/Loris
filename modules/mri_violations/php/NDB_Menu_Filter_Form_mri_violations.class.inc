@@ -159,11 +159,14 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
             $useProjects = true;
         }
 
+        $dir_path = $config->getSetting("imagePath");
+
         $this->columns = array(
             'v.PatientName',
             'v.Site',
             'v.TimeRun',
             'v.MincFile',
+            'v.MincFileViolated',
             'v.Series_Description as Series_Description_Or_Scan_Type',
             'v.Problem',
             'v.SeriesUID',
@@ -182,6 +185,7 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
                 c.ProjectID as Project,
                 s.SubprojectID as Subproject,
                 minc_location as MincFile,
+		CONCAT_WS('','" . $dir_path . "','trashbin/',SUBSTRING_INDEX(minc_location, '/', -2)) as MincFileViolated,
                 series_description as Series_Description,
                 'Could not identify scan type' as Problem,
                 SeriesUID,
@@ -206,6 +210,7 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
                 c.ProjectID as Project,
                 s.SubprojectID as Subproject,
                 MincFile,
+                null,
                 mri_scan_type.Scan_type,
                 'Protocol Violation',
                 SeriesUID,
@@ -232,6 +237,7 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
                 c.ProjectID as Project,
                 s.SubprojectID as Subproject,
                 MincFile,
+                null,
                 null,
                 Reason,
                 SeriesUID,

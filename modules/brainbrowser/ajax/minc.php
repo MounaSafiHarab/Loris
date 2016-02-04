@@ -18,16 +18,26 @@
 ini_set('default_charset', 'utf-8');
 require_once "Utility.class.inc";
 require_once "NDB_Config.class.inc";
+require_once "/opt/minc/minc-toolkit-config.php";
 
 $headers = array();
 
 $query     = "select File from files where FileID = :MincID";
-$minc_file = $DB->pselectOne($query, array('MincID' => $_REQUEST['minc_id']));
-$minc_file = getMincLocation() . $minc_file;
 
+
+if (isset($_REQUEST['minc_location'])) {
+    $minc_file  =  ($_REQUEST['minc_location']);
+}
+else {
+    $minc_file = $DB->pselectOne($query, array('MincID' => $_REQUEST['minc_id']));
+    $minc_file = getMincLocation() . $minc_file;
+    $minc_file = $DB->pselectOne($query, array('MincID' => $_REQUEST['minc_id']));
+    $minc_file = getMincLocation() . $minc_file;
+}
 
 $header      = $_REQUEST['minc_headers'];
 $header_data = $_REQUEST['raw_data'];
+
 if ($header_data) {
     passthru("minctoraw -byte -unsigned -normalize $minc_file");
 }
