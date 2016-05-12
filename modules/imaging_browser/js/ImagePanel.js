@@ -209,6 +209,20 @@ ImagePanelQCCaveatSelector = React.createClass({displayName: "ImagePanelQCCaveat
         );
     }
 });
+ImagePanelQCSNR = React.createClass({displayName: "ImagePanelQCSNR",
+    render: function () {
+        return (
+            React.createElement(ImageQCDropdown, {
+                Label: "SNR", 
+                FormName: "snr", 
+                FileID: this.props.FileID, 
+                editable: this.props.HasQCPerm, 
+                options: this.props.SNROptions, 
+                defaultValue: this.props.SNR}
+            )
+        );
+    }
+});
 ImagePanelQCPanel = React.createClass({displayName: "ImagePanelQCPanel",
     mixins: [React.addons.PureRenderMixin],
     render: function() {
@@ -230,8 +244,13 @@ ImagePanelQCPanel = React.createClass({displayName: "ImagePanelQCPanel",
                     FileID: this.props.FileID, 
                     HasQCPerm: this.props.HasQCPerm, 
                     Caveat: this.props.Caveat}
+                ),
+                React.createElement(ImagePanelQCSNR, {
+                    FileID: this.props.FileID, 
+                    HasQCPerm: this.props.HasQCPerm, 
+                    SNROptions: this.props.SNROptions, 
+                    SNR: this.props.SNR}
                 )
-
             )
         );
     }
@@ -330,7 +349,9 @@ ImagePanelBody = React.createClass({displayName: "ImagePanelBody",
                                 QCStatus: this.props.QCStatus, 
                                 Caveat: this.props.Caveat, 
                                 SelectedOptions: this.props.SelectedOptions, 
-                                Selected: this.props.Selected}
+                                Selected: this.props.Selected,
+                                SNROptions: this.props.SNROptions, 
+                                SNR: this.props.SNR}
                             )
                          )
                     ), 
@@ -395,6 +416,8 @@ ImagePanel = React.createClass({displayName: "ImagePanel",
                         Caveat: this.props.Caveat, 
                         SelectedOptions: this.props.SelectedOptions, 
                         Selected: this.props.Selected, 
+                        SNROptions: this.props.SNROptions, 
+                        SNR: this.props.SNR, 
 
                         Fullname: this.props.Fullname, 
                         XMLProtocol: this.props.XMLProtocol, 
