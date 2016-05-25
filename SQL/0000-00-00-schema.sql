@@ -771,7 +771,9 @@ INSERT INTO `notification_types` (Type,private,Description) VALUES
     ('mri invalid study',0,'Incorrectly labelled studies received by the MRI upload handler'),
     ('hardcopy request',0,'Hardcopy requests'),
     ('visual bvl qc',0,'Timepoints selected for visual QC'),
-    ('mri qc status',0,'MRI QC Status change');
+    ('mri qc status',0,'MRI QC Status change'),
+    ('Tx notification status',1,'Notification transmittal status');
+
 
 INSERT INTO notification_types (Type,private,Description) VALUES 
     ('minc insertion',1,'Insertion of the mincs into the mri-table'),
