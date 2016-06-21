@@ -51,12 +51,19 @@ curl_setopt($ch, CURLOPT_POSTFIELDS,$data_json);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 $response  = curl_exec($ch); 
 
-$atoken_tmp = json_decode($response);
-$atoken = $atoken_tmp->token;
+$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+print "HTTP code: $httpcode \n";
 
-$filename = 'token_response_' . $atoken . '.txt';
-file_put_contents($filename, $response);
+if ($httpcode == 200) {
+      $atoken_tmp = json_decode($response);
+      $atoken = $atoken_tmp->token;
 
+      $filename = 'token_response_' . $atoken . '.txt';
+      file_put_contents($filename, $response);
+}
+elseif ($httpcode === 400 || $httpcode === 401) {
+        print "Could not get authentication token; HTTP code: $httpcode\n";
+}
 curl_close($ch); 
 
 // Now use the token to send a notification to BrainCode
@@ -82,7 +89,7 @@ if ($result) {
         $nb_minc_inserted  = $result2['number_of_mincInserted'];
         // Get PatientName from tarchive table because mri_upload has this field blank for phantoms
         $query3 = "SELECT t.PatientName from tarchive t JOIN mri_upload m " .
-                 "ON t.TarchiveID=m.TarchiveID";
+                 "ON t.TarchiveID=m.TarchiveID AND m.UploadID = " . $upload_id;
         print "query3 is $query3 \n";
         $result3           = $DB->pselectRow($query3,array());
         $PatientName       = $result3['PatientName'];
@@ -102,7 +109,6 @@ if ($result) {
        $data = array('project'=>$Project, 'subject'=>$PatientName, 'session'=>$SessionID, 'event'=>'archived', 'count_created'=>$nb_minc_created, 'count_inserted'=>$nb_minc_inserted);
        $data_json = json_encode($data);
 
-
        $ch = curl_init();
 
        curl_setopt($ch, CURLOPT_URL, $url);
@@ -115,17 +121,35 @@ if ($result) {
        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
        $response  = curl_exec($ch); 
 
-       $filename = 'braincode_notification_' . $PatientName . '_' . $SessionID . '_' . $nb_minc_created . '_' . $nb_minc_inserted . '.txt';
-       file_put_contents($filename, $response);
+       $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+       print "HTTP code: $httpcode \n";
 
-       $message = "The URL " . $url . " was notified with this message: Patient " . $PatientName . " with session ID " . $SessionID . 
-                  " had " . $nb_minc_created . " and " . $nb_minc_inserted . " mincs created and inserted, respectively \n"; 
+       if ($httpcode === 201) {
 
-       $query4 = "INSERT INTO notification_spool (NotificationTypeID,ProcessID,Message) VALUES (16,$upload_id,$message)";
-       print "query4 is $query4 \n";
+              $filename = 'braincode_notification_' . $PatientName . '_' . $SessionID . '_' . $nb_minc_created . '_' . $nb_minc_inserted . '.txt';
+              file_put_contents($filename, $response);
 
-       $DB->insert('notification_spool', array('NotificationTypeID' => '16', 'ProcessID' => $upload_id, 'Message' => $message)
-       ); 
+              $message = "The URL " . $url . " was notified with this message: Patient " . $PatientName . " with session ID " . $SessionID . 
+                         " had " . $nb_minc_created . " and " . $nb_minc_inserted . " mincs created and inserted, respectively \n"; 
+
+              $query4 = "INSERT INTO notification_spool (NotificationTypeID,ProcessID,Message) VALUES (16,$upload_id,$message)";
+              print "query4 is $query4 \n";
+
+              $DB->insert('notification_spool', array('NotificationTypeID' => '16', 'ProcessID' => $upload_id, 'Message' => $message)
+              ); 
+       }
+       elseif ($httpcode === 400 || $httpcode === 401) {
+
+              $message = "The URL " . $url . " could NOT be notified with this message: Patient " . $PatientName . " with session ID " . $SessionID . 
+                         " had " . $nb_minc_created . " and " . $nb_minc_inserted . " mincs created and inserted, respectively;" .
+			 " due to an HTTP code: $httpcode \n"; 
+
+              $query4 = "INSERT INTO notification_spool (NotificationTypeID,ProcessID,Message) VALUES (16,$upload_id,$message)";
+              print "query4 is $query4 \n";
+
+              $DB->insert('notification_spool', array('NotificationTypeID' => '16', 'ProcessID' => $upload_id, 'Message' => $message)
+              ); 
+       }
     } // end of each upload_id
 } // end of if $result
 
