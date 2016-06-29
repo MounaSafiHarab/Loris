@@ -80,25 +80,35 @@ if ($result) {
     foreach ($result as $row) {
         $upload_id=$row['ProcessID'];
 
-        $query2 = "SELECT SessionID, number_of_mincInserted, number_of_mincCreated FROM mri_upload " .
-                 "WHERE UploadID= " . $upload_id;
+        $query2 = "SELECT SessionID, number_of_mincInserted, number_of_mincCreated, IsPhantom, PatientName ".
+		  "FROM mri_upload WHERE UploadID= " . $upload_id;
         print "query2 is $query2 \n";
         $result2 = $DB->pselectRow($query2,array());
         $SessionID         = $result2['SessionID'];
         $nb_minc_created   = $result2['number_of_mincCreated'];
         $nb_minc_inserted  = $result2['number_of_mincInserted'];
-        // Get PatientName from tarchive table because mri_upload has this field blank for phantoms
-        $query3 = "SELECT t.PatientName from tarchive t JOIN mri_upload m " .
-                 "ON t.TarchiveID=m.TarchiveID AND m.UploadID = " . $upload_id;
-        print "query3 is $query3 \n";
-        $result3           = $DB->pselectRow($query3,array());
-        $PatientName       = $result3['PatientName'];
-        $StrLenPName       = strlen($PatientName);
+        $phantom           = $result2['IsPhantom'];
+        $PatientName       = $result2['PatientName'];
+        
+	// If candidate is a phantom, get the patientName from tarchive table; then use this as 
+	// Visit_label from the candidate table to get the candID
+	if ($phantom === 'Y') {
+	    $query3 = "SELECT t.PatientName from tarchive t JOIN mri_upload m " .
+                      "ON t.TarchiveID=m.TarchiveID AND m.UploadID = " . $upload_id;
+        	      print "query3 is $query3 \n";
+            $result3           = $DB->pselectRow($query3,array());
+            $PatientName       = $result3['PatientName'];
+	    $query4 = "SELECT s.CandID from session s JOIN tarchive t ON s.Visit_label = '" . $PatientName . "'";
+        	      print "query4 is $query4 \n";
+            $result4           = $DB->pselectRow($query4,array());
+            $CandID            = $result4['CandID'];
 
-        // Strlen can not exceed 25 so for phantoms this might be a problem; so take last 25 chars
-        if ($StrLenPName > 25) {
-            $PatientName = substr($PatientName, -25);
-        }
+	}
+	// Otherwise, use the PatientName to split the string and extract candid from PSCID_CandID_Visit
+	else {
+	    $split  = explode ("_", $PatientName);
+	    $CandID = $split[1];
+	}
 
         /*
         * Notify BrainCode that CCNA just uploaded and processed a scan
@@ -106,7 +116,7 @@ if ($result) {
         * uploaded for a candidate and session 
         */
  
-       $data = array('project'=>$Project, 'subject'=>$PatientName, 'session'=>$SessionID, 'event'=>'archived', 'count_created'=>$nb_minc_created, 'count_inserted'=>$nb_minc_inserted);
+       $data = array('project'=>$Project, 'subject'=>$CandID, 'session'=>$SessionID, 'event'=>'archived', 'count_created'=>$nb_minc_created, 'count_inserted'=>$nb_minc_inserted);
        $data_json = json_encode($data);
 
        $ch = curl_init();
@@ -126,11 +136,11 @@ if ($result) {
 
        if ($httpcode === 201) {
 
-              $filename = 'braincode_notification_' . $PatientName . '_' . $SessionID . '_' . $nb_minc_created . '_' . $nb_minc_inserted . '.txt';
+              $filename = 'braincode_notification_' . $CandID . '_' . $SessionID . '_' . $nb_minc_created . '_' . $nb_minc_inserted . '.txt';
               file_put_contents($filename, $response);
 
-              $message = "The URL " . $url . " was notified with this message: Patient " . $PatientName . " with session ID " . $SessionID . 
-                         " had " . $nb_minc_created . " and " . $nb_minc_inserted . " mincs created and inserted, respectively \n"; 
+              $message = "The URL " . $url . " was notified with this message: Candidate " . $CandID . " with session ID " . $SessionID . 
+                         " had " . $nb_minc_created . " minc(s) created and " . $nb_minc_inserted . " minc(s) inserted. \n";
 
               $query4 = "INSERT INTO notification_spool (NotificationTypeID,ProcessID,Message) VALUES (16,$upload_id,$message)";
               print "query4 is $query4 \n";
@@ -140,8 +150,8 @@ if ($result) {
        }
        elseif ($httpcode === 400 || $httpcode === 401) {
 
-              $message = "The URL " . $url . " could NOT be notified with this message: Patient " . $PatientName . " with session ID " . $SessionID . 
-                         " had " . $nb_minc_created . " and " . $nb_minc_inserted . " mincs created and inserted, respectively;" .
+              $message = "The URL " . $url . " could NOT be notified with this message: Candidate " . $CandID . " with session ID " . $SessionID . 
+                         " had " . $nb_minc_created . " minc(s) created and " . $nb_minc_inserted . " minc(s) inserted" .
 			 " due to an HTTP code: $httpcode \n"; 
 
               $query4 = "INSERT INTO notification_spool (NotificationTypeID,ProcessID,Message) VALUES (16,$upload_id,$message)";
