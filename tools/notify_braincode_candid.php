@@ -1,27 +1,32 @@
 <?php
+
 /**
  * This script fetches new mri study from notification_spool & notifies BrainCode
  *
  * PHP Version 5
  *
- * @category Main
- * @package  Loris
- * @author   Various <example@example.com>
- * @license  Loris license
- * @link     https://www.github.com/aces/Loris-Trunk/
+ * @category   Main
+ * @package    Loris
+ * @subpackage Tools
+ * @author     Various <example@example.com>
+ * @license    Loris license
+ * @link       https://www.github.com/aces/Loris-Trunk/
  */
+
 require_once __DIR__ . "/../vendor/autoload.php";
 require_once "generic_includes.php";
 require_once "Utility.class.inc";
-
 /**
  * Informs BrainCode of a new MRI upload
  *
- * @category Main
- * @package  Loris
- * @author   Various <example@example.com>
- * @license  Loris license
- * @link     https://www.github.com/aces/Loris-Trunk/
+ * This tool is to notify BrainCode of an Upload
+ *
+ * @category   Main
+ * @package    Loris
+ * @subpackage Tools
+ * @author     Various <example@example.com>
+ * @license    Loris license
+ * @link       https://www.github.com/aces/Loris-Trunk/
  */
 
 if (!empty($argv[1]) && !empty($argv[2])) {
@@ -131,11 +136,18 @@ if ($result) {
         $ch = curl_init();
 
         curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json', 'Content-Length: ' . strlen($data_json), 'Authorization: Token '.$atoken));
+        curl_setopt(
+            $ch,
+            CURLOPT_HTTPHEADER,
+            array(
+             'Content-Type: application/json',
+             'Content-Length: ' . strlen($data_json),
+             'Authorization: Token '.$atoken,
+            )
+        );
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data_json);
         curl_setopt($ch, CURLOPT_USERPWD, "$username:$password");
-
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $response = curl_exec($ch);
@@ -196,6 +208,4 @@ if ($result) {
 }
 
 curl_close($ch);
-
-
 ?>
