@@ -155,8 +155,8 @@ ImageQCDropdown = React.createClass({
 });
 ImageQCStatic = React.createClass({
     render: function() {
-        var static;
-        static = (
+        var staticInfo;
+        staticInfo = (
             <div className="col-xs-12">
                 {this.props.defaultValue}
             </div>
@@ -164,7 +164,7 @@ ImageQCStatic = React.createClass({
         return (
             <div className="row">
                 <label>{this.props.Label}</label>
-                {static}
+                {staticInfo}
             </div>
         );
     }
@@ -219,7 +219,7 @@ ImagePanelQCCaveatSelector = React.createClass({
                         "1" : "True",
                         "0" : "False"
                     }
-                } 
+                }
                 defaultValue={this.props.Caveat}
             />
         );
@@ -300,7 +300,7 @@ ImageQCCommentsButton = React.createClass({
         };
         return (
             <a className="btn btn-default"
-                href="#noID" 
+                href="#noID"
                 onClick={this.openWindowHandler}
                 >
                     <span className="text-default">
@@ -343,10 +343,10 @@ ImageDownloadButtons = React.createClass({
     render: function() {
         return (
             <div className="row mri-second-row-panel col-xs-12">
-                <ImageQCCommentsButton FileID={this.props.FileID} 
+                <ImageQCCommentsButton FileID={this.props.FileID}
                     BaseURL={this.props.BaseURL}
                 />
-                <DownloadButton FileName={this.props.Fullname} 
+                <DownloadButton FileName={this.props.Fullname}
                     Label="Download Minc"
                     BaseURL={this.props.BaseURL}
                 />
@@ -354,11 +354,11 @@ ImageDownloadButtons = React.createClass({
                     BaseURL={this.props.BaseURL}
                     Label="Download XML Protocol"
                 />
-                <DownloadButton FileName={this.props.XMLReport} 
+                <DownloadButton FileName={this.props.XMLReport}
                     BaseURL={this.props.BaseURL}
                     Label="Download XML Report"
                 />
-                <DownloadButton FileName={this.props.NrrdFile} 
+                <DownloadButton FileName={this.props.NrrdFile}
                     BaseURL={this.props.BaseURL}
                     Label="Download NRRD"
                 />
@@ -434,7 +434,7 @@ ImagePanel = React.createClass({
         return (
             <div className="col-xs-12 col-md-6">
                 <div className="panel panel-default">
-                <ImagePanelHeader 
+                <ImagePanelHeader
                     FileID={this.props.FileID}
                     Filename={this.props.Filename}
                     QCStatus={this.props.QCStatus}
@@ -443,7 +443,7 @@ ImagePanel = React.createClass({
                     Expanded={!this.state.BodyCollapsed}
                     HeadersExpanded={!this.state.HeadersCollapsed}
                 />
-                {this.state.BodyCollapsed ? '' : 
+                {this.state.BodyCollapsed ? '' :
                     <ImagePanelBody
                         BaseURL={this.props.BaseURL}
 
@@ -452,7 +452,7 @@ ImagePanel = React.createClass({
                         Checkpic={this.props.Checkpic}
                         HeadersExpanded={!this.state.HeadersCollapsed}
 
-                        HeaderInfo={this.props.HeaderInfo} 
+                        HeaderInfo={this.props.HeaderInfo}
 
                         FileNew={this.props.FileNew}
                         HasQCPerm={this.props.HasQCPerm}

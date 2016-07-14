@@ -339,12 +339,12 @@ ImageQCStatic = React.createClass({
     displayName: 'ImageQCStatic',
 
     render: function () {
-        var static;
-            static = React.createElement(
-                'div',
-                { className: 'col-xs-12' },
-                this.props.defaultValue
-            );
+        var staticInfo;
+        staticInfo = React.createElement(
+            'div',
+            { className: 'col-xs-12' },
+            this.props.defaultValue
+        );
         return React.createElement(
             'div',
             { className: 'row' },
@@ -353,7 +353,7 @@ ImageQCStatic = React.createClass({
                 null,
                 this.props.Label
             ),
-            static
+            staticInfo
         );
     }
 });
@@ -689,7 +689,6 @@ ImagePanel = React.createClass({
                     Caveat: this.props.Caveat,
                     SelectedOptions: this.props.SelectedOptions,
                     Selected: this.props.Selected,
-                    SNR: this.props.SNR,
 
                     Fullname: this.props.Fullname,
                     XMLProtocol: this.props.XMLProtocol,
