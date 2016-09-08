@@ -330,6 +330,9 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         $dicom_archive_settings = $config->getSetting(
             'dicom_archive'
         );
+        $phantoms_frontend = $config->getSetting(
+            'PhantomsFrontEndInsertion'
+        );
         $corect_name            = $dicom_archive_settings['patientNameRegex'];
         $header_patient_name    = array();
         $file_name = $file->fileInfo['name'];
@@ -341,8 +344,11 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         }
         ///////////////////////////////////////////////////////////////////////
         /////////Validate the advanced Options only if it's not a Phantom//////
+        /////    and if it were, then not inserted from the front-end    //////
         ///////////////////////////////////////////////////////////////////////
-        if ($args['values']['IsPhantom']=='N') {
+        if (($args['values']['IsPhantom']=='N')
+	    || (($args['values']['IsPhantom']=='Y') 
+	         && ($phantoms_frontend=='true' || $phantoms_frontend=='1'))) {
             ///////////////////////////////////////////////////////////////////////
             ////////////// make sure the advanced options are filled out///////////
             ///////////////////////////////////////////////////////////////////////
@@ -433,7 +439,10 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         $feedbacks = array();
         $db        = Database::singleton();
         $file_name =  $file->fileInfo['name'];
-
+        $config    = NDB_Config::singleton();
+        $phantoms_frontend = $config->getSetting(
+            'PhantomsFrontEndInsertion'
+        );
         $pname     = '';
         $IsPhantom = $args['values']['IsPhantom'];
         ///////////////////////////////////////////////////////////////////////
@@ -451,7 +460,9 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         ///////////////////////////////////////////////////////////////////////
         /////Get the pscid, candid and visit_label/////////////////////////////
         ///////////////////////////////////////////////////////////////////////
-        if ($args['values']['IsPhantom']=='N') {
+        if (($args['values']['IsPhantom']=='N') 
+	    || (($args['values']['IsPhantom']=='Y') 
+	         && ($phantoms_frontend==='true' || $phantoms_frontend==='1'))) {
             if ((!empty($args['values']['CandID']))
                 && (!empty($args['values']['PSCID']))
                 &&(!empty($args['values']['Visit_label']))

@@ -93,7 +93,6 @@ class Candidate
             LEFT JOIN psc as p USING (CenterID)
             LEFT JOIN users as u1 ON (u1.UserID = c.RegisteredBy)
             WHERE c.CandID=:Candidate AND c.Active = 'Y'";
-
         $row = $db->pselectRow($query, $CandArray);
 
         if (!is_array($row) || sizeof($row) == 0) {
@@ -802,6 +801,19 @@ class Candidate
         $PSCIDSettings = $config->getSetting('PSCID');
         $regex         = Utility::structureToPCRE(
             $PSCIDSettings['structure'],
+            $siteAbbrev
+        );
+        return preg_match($regex, $PSCID);
+    }
+
+    static public function validatePSCIDPhant($PSCID, $siteAbbrev=null)
+    {
+        $factory = NDB_Factory::singleton();
+        $config  = $factory->config();
+
+        $PSCIDPhantSettings = $config->getSetting('PSCIDPhantoms');
+        $regex         = Utility::structureToPCRE(
+            $PSCIDPhantSettings['structure'],
             $siteAbbrev
         );
         return preg_match($regex, $PSCID);

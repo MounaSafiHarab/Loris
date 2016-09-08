@@ -74,6 +74,7 @@ CREATE TABLE `candidate` (
   `Entity_type` enum('Human','Scanner') NOT NULL default 'Human',
   `ProbandGender` enum('Male','Female') DEFAULT NULL,
   `ProbandDoB` date DEFAULT NULL,
+  `ScannerID` int(6) default NULL, 
   PRIMARY KEY  (`CandID`),
   UNIQUE KEY `ID` (`ID`),
   UNIQUE KEY `ExternalID` (`ExternalID`),

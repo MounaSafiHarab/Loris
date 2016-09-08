@@ -47,6 +47,7 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'allowPrenatalTimepoints', 'Determines whether creation of timepoints prior to Date of Birth is allowed', 1, 0, 'boolean', ID, 'Allow Prenatal Timepoints', 20 FROM ConfigSettings WHERE Name="study";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'ImagingUploaderAutoLaunch', "Allows running the ImagingUpload pre-processing scripts", 1, 0, 'boolean', ID, 'ImagingUploader Auto Launch',21 FROM ConfigSettings WHERE Name="study";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'citation_policy', 'Citation Policy for Acknowledgements module', 1, 0, 'textarea', ID, 'Citation Policy', 22 FROM ConfigSettings WHERE Name="study";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'PhantomsFrontEndInsertion', 'Allows inserting phantoms from the front-end Phantom module', 1, 0, 'boolean', ID, 'Phantoms Front End Creation', 23 FROM ConfigSettings WHERE Name="study";
 
 -- paths
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, OrderNumber) VALUES ('paths', 'Specify directories where LORIS-related files are stored or created. Take care when editing these fields as changing them incorrectly can cause certain modules to lose functionality.', 1, 0, 'Paths', 2);
@@ -133,6 +134,7 @@ INSERT INTO Config (ConfigID, Value) SELECT ID, "true" FROM ConfigSettings WHERE
 INSERT INTO Config (ConfigID, Value) SELECT ID, "true" FROM ConfigSettings WHERE Name="allowPrenatalTimepoints";
 INSERT INTO Config (ConfigID, Value) SELECT ID, 0 FROM ConfigSettings WHERE Name="ImagingUploaderAutoLaunch";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "Modify this to your project's citation policy" FROM ConfigSettings WHERE Name="citation_policy";
+INSERT INTO Config (ConfigID, Value) SELECT ID, 0 FROM ConfigSettings WHERE Name="PhantomsFrontEndInsertion";
 
 -- default path settings
 INSERT INTO Config (ConfigID, Value) SELECT ID, "/data/%PROJECTNAME%/data/" FROM ConfigSettings WHERE Name="imagePath";
