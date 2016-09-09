@@ -81,6 +81,8 @@ class NDB_Form_new_phantom_profile extends NDB_Form
                 $errors['PhantomTypes'] = 'Phantom Type ID can not be extracted from the Phantom Type';
 	    }
 
+$expected_pscid = 'X' . $site->getSiteAlias() . $expectedtypeID . $expectedphantID;
+
             if(($values['PhantomTypes']) != ($expectedtype)) {
                 $errors['PhantomTypes'] = 'Phantom Type must be concordant with the type in the phantom table for that Phantom Name';
             } 
@@ -91,7 +93,7 @@ class NDB_Form_new_phantom_profile extends NDB_Form
                 $errors['PSCID'] = 'PSCID does not contain the alias for the site you belong to';
             } elseif($expected_pscid != $values['PSCID']) {
                 $errors['PSCID'] = 'PSCID does not follow the structure of X, followed by Site Alias, followed 
-				    by the ID of the Phantom Name, followed by the ID of the Phantom Type';
+				    by the ID of the Phantom Type, followed by the ID of the Phantom Name';
             } elseif($db->pselectOne("SELECT count(PSCID) FROM candidate WHERE PSCID=:V_PSCID", 
                 array('V_PSCID' => $values[PSCID])) > 0
             ) {
