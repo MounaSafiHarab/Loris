@@ -189,8 +189,10 @@ class Create_Timepoint extends \NDB_Form
                     $psc_labelOptions[$psc] = $siteAlias;
             }
             $this->addSelect('psc', 'Site', $psc_labelOptions);
-            $this->addRule('psc', 'Site Alias is required', 'required');
-            $this->_setDefaults(array("psc" => $this->psc));
+            // Set default Center
+            $DB =& Database::singleton();
+            $centerID = $candidate->getCenterID();
+            $this->_setDefaults(array("psc"=> $centerID));
         }
 
         $this->form->addFormRule(array(&$this, '_validate'));
