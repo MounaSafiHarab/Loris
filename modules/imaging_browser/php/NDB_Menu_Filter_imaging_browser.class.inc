@@ -120,7 +120,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         }
 
         $this->columns = array(
-            'p.MRI_alias as Site',
+            'p.MRI_alias as Visit_Site',
             'c.PSCID as PSCID',
             'c.CandID as DCCID',
             's.visit_label as Visit_Label',
@@ -138,7 +138,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         $this->order_by = 'c.PSCID, s.Visit_label';
         $this->group_by = 's.ID';
         $this->headers = array(
-            'Site',
+            'Visit_Site',
             'PSCID',
             'DCCID',
             'Visit_Label',
@@ -166,6 +166,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             'c.CandID',
             'c.ProjectID',
             'c.CenterID',
+            's.CenterID',
             's.MRIQCStatus',
             'pending',
             'f.AcquisitionProtocolID'
@@ -176,7 +177,8 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             'VL'    => 's.Visit_label',
             'DCCID'=> 'c.CandID',
             'ProjectID' => 'c.ProjectID',
-            'SiteID' => 'c.CenterID',
+            'RecruitingSiteID' => 'c.CenterID',
+            'VisitSiteID' => 's.CenterID',
             'VisitQCStatus' => 's.MRIQCStatus',
             'Pending' => 'pending',
             'Scan_type'=>'f.AcquisitionProtocolID'
@@ -242,7 +244,8 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             $this->addSelect('ProjectID', 'Project', $list_of_projects);
         }
 
-        $this->addSelect('SiteID', 'Site', $list_of_sites);
+        $this->addSelect('RecruitingSiteID', 'Recruiting Site', $list_of_sites);
+        $this->addSelect('VisitSiteID', 'Visit Site', $list_of_sites);
         $this->addSelect(
             'VisitQCStatus',
             'QC Status',

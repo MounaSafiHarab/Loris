@@ -51,10 +51,18 @@
         <div class="row">
             <div class="form-group col-sm-4">
                 <label class="col-sm-12 col-md-4">
-                    {$form.SiteID.label}
+                    {$form.RecruitingSiteID.label}
                 </label>
                 <div class="col-sm-12 col-md-8">
-                    {$form.SiteID.html}
+                    {$form.RecruitingSiteID.html}
+                </div>
+            </div>
+            <div class="form-group col-sm-4">
+                <label class="col-sm-12 col-md-4">
+                    {$form.VisitSiteID.label}
+                </label>
+                <div class="col-sm-12 col-md-8">
+                    {$form.VisitSiteID.html}
                 </div>
             </div>
             <div class="form-group col-sm-4">
