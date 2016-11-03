@@ -82,6 +82,10 @@ class NDB_Form_User_Accounts extends NDB_Form
             $user = User::factory($this->identifier);
             // get the user defaults
             $defaults = $user->getData();
+print_r ("Defaults are:");
+print_r ("\n");
+print_r ($defaults['Site']);
+print_r ("\n");
             // remove the password hash
             unset($defaults['Password_md5']);
 
@@ -219,6 +223,118 @@ class NDB_Form_User_Accounts extends NDB_Form
             unset($values['Password_md5']);
         }
 
+        // multi-site UPDATE
+        $user_data = $user->getData();
+        $uid = $user_data['ID'];
+print_r ("In process function, entering the multi site:");
+print_r ("\n");
+print_r ($values);
+print_r ("\n");
+        $us_curr_sites =array();
+        $us_prev_sites =array();
+
+        //get sites where user is already at for compare
+        $prev_sites = $DB->pselect(
+            "
+                        SELECT CenterID
+                        FROM user_psc_rel
+                        WHERE UserID=:uid",
+            array(
+             "uid" => $uid,
+            )
+        );
+print_r ("Previous sites:");
+print_r ("\n");
+print_r ($prev_sites);
+print_r ("\n");
+        foreach ($prev_sites as $row=>$center) {
+            $pr_cid = $center['CenterID'];
+            array_push($us_prev_sites, $pr_cid);
+        }
+
+        $curr_sites = $values['CenterID'];
+print_r ("Current sites:");
+print_r ("\n");
+print_r ($curr_sites);
+print_r ("\n");
+        foreach ($curr_sites as $key=>$val) {
+            //get MultiSelected CenterID
+            array_push($us_curr_sites, $val);
+            //Check if CenterID already in user_psc_rel for that user
+            $result = $DB->pselectRow(
+                    "
+                          SELECT CenterID
+                          FROM user_psc_rel
+                          WHERE UserID=:uid",
+                    array(
+                     "uid" => $uid,
+                    )
+            );
+
+            // Center was not previously added
+            if (empty($result) || is_null($result)) {
+print_r ("In empty loop");
+print_r ("\n");
+                    $DB->insert(
+                        'user_psc_rel',
+                        array(
+                         'UserID'    => $uid,
+                         'CenterID'         => $val,
+                        )
+                    );
+            } elseif (in_array($val, $us_prev_sites)) {
+print_r ("In in_array loop");
+print_r ("\n");
+print_r ("$val");
+print_r ("\n");
+                unset($values[$key]);
+            } elseif (!(in_array($val, $us_prev_sites))) {
+print_r ("In NOT in_array loop");
+print_r ("\n");
+print_r ("$val");
+print_r ("\n");
+                    // insert not_in_array value                    
+                    $DB->insert(
+                        'user_psc_rel',
+                        array(
+                         'UserID'    => $uid,
+                         'CenterID'      => $val,
+                        )
+                    );
+
+            }
+        }
+        // Delete all entries from user_psc_rel in 
+        // previous and not in current sites
+        $old_sites = array_diff($us_prev_sites, $us_curr_sites);
+print_r ("In Previous not in current site values");
+print_r ("\n");
+print_r ("$old_sites");
+print_r ("\n");
+        if ((!empty($old_sites)) && (!(is_null($old_sites)))) {
+            // There is some difference, so delete those in the old sites
+            foreach ($old_sites as $key=>$val) {
+print_r ("In diff sites loop");
+print_r ("\n");
+print_r ("$val");
+print_r ("\n");
+                $DB->delete(
+                            'user_psc_rel',
+                            array(
+                            'CenterID'      => $val,
+                            ),
+                            array(
+                            'UserID'    => $uid,
+                            )
+                );
+            }
+
+//          unset($values[$key]);
+        }
+
+        //END MULTI-SITE
+
+
         // EXAMINER UPDATE
         $ex_curr_sites =array();
         $ex_prev_sites =array();
@@ -236,6 +352,7 @@ class NDB_Form_User_Accounts extends NDB_Form
         foreach ($prev_sites as $row=>$center) {
             array_push($ex_prev_sites, $center['centerID']);
         }
+print_r($values);
         foreach ($values as $k=>$v) {
             //examiner fields
             if (preg_match("/^ex_[0-9]+$/", $k)) {
@@ -303,11 +420,11 @@ class NDB_Form_User_Accounts extends NDB_Form
         unset($values['examiner_radiologist']);
         //END EXAMINER UPDATE
 
+
         // make the set
         foreach ($values as $key => $value) {
             $set[$key] = $value;
         }
-
         // update the user
         if ($this->isCreatingNewUser()) {
             // insert a new user
@@ -549,7 +666,7 @@ class NDB_Form_User_Accounts extends NDB_Form
                    $editor->getData('CenterID') => $editor->getData('Site'),
                   );
         }
-        $this->addSelect('CenterID', 'Site', $siteOptions);
+        $this->addSelect('CenterID', 'Site', $siteOptions, array("multiple"));
 
         if ($editor->hasPermission('examiner_multisite')) {
             //get site aliases

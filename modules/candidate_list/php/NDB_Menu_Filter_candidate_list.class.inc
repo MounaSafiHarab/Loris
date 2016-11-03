@@ -33,12 +33,19 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
     {
         // create user object
         $user =& User::singleton();
-        $site =& Site::singleton($user->getData('CenterID'));
-        $aap  = $user->hasPermission('access_all_profiles');
-        $this->tpl_data['access_all_profiles'] = $aap;
+        $sites_arr = $user->getData('CenterID');
+        $each_site = explode("; ", $sites_arr);
+print_r($each_site);
+print_r("\n");
+        foreach ($each_site as $key=>$val) {
+            $site[$key] = & Site::singleton($val);
+//        $site =& Site::singleton($user->getData('CenterID'));
+            $aap[$key]  = $user->hasPermission('access_all_profiles');
+            $this->tpl_data['access_all_profiles'] = $aap[$key];
+        }
         return (
             $user->hasPermission('access_all_profiles')
-            || ($site->isStudySite() && $user->hasPermission('data_entry'))
+            || ($site[$key]->isStudySite() && $user->hasPermission('data_entry'))
         );
     }
 
@@ -217,11 +224,20 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
             }
         } else {
             // allow only to view own site data
-            $site =& Site::singleton($user->getData('CenterID'));
-            if ($site->isStudySite()) {
-                $list_of_sites = array();
-                $list_of_sites[$user->getData('CenterID')] = $user->getData('Site');
+//            $site =& Site::singleton($user->getData('CenterID'));
+            $centerID_arr = $user->getData('CenterID');
+            $each_centerID = explode("; ", $centerID_arr);
+            $site_arr = $user->getData('Site');
+            $each_site = explode("; ", $site_arr);
+            foreach ($each_centerID as $key=>$val) {
+                $centerID[$key] = & Site::singleton($val);
+                //$list_of_sites = array();
+                if ($centerID[$key]->isStudySite()) {
+                    $list_of_sites[$val] = $each_site[$key];
+                }
             }
+print_r($list_of_sites);
+print_r("\n");
         }
 
         // SubprojectID

@@ -45,7 +45,7 @@ class User extends UserPermissions
     {
         $obj = new User;
 
-        // right off, set the username
+        // right off, set the username and userid
         $obj->userInfo['UserID'] = $username;
 
         // get the user's permissions
@@ -55,12 +55,29 @@ class User extends UserPermissions
         $DB =& Database::singleton();
 
         // get user data from database
-        $query = "SELECT users.*, psc.Name AS Site FROM users
+/** WITH RIDA
+*/
+            $query = "SELECT users.*,
+            GROUP_CONCAT(psc.Name SEPARATOR '; ') AS Site,
+            psc.Name
+            FROM users
+            JOIN user_psc_rel ON (user_psc_rel.UserID=users.ID)
+            LEFT JOIN psc ON (user_psc_rel.CenterID=psc.CenterID)
+            WHERE users.UserID = :UID
+            GROUP BY users.ID";
+
+/*
+            $query = "SELECT users.*, psc.Name AS Site FROM users
             LEFT JOIN psc ON (users.centerID=psc.CenterID)
             WHERE users.UserID = :UID";
-
+*/
         $row = $DB->pselectRow($query, array('UID' => $username));
 
+/*
+print_r($query);
+print_r("\n");
+print_r($row);
+*/
         // Get examiner information
         $examiner_check = $DB->pselect(
             "SELECT full_name, centerID, radiologist, active, pending_approval 
@@ -71,6 +88,21 @@ class User extends UserPermissions
              "fn" => $row['Real_name'],
             )
         );
+
+        $centerID_info = $DB->pselect(
+            "
+            SELECT CenterID
+            FROM user_psc_rel
+            WHERE UserID=:uid",
+            array(
+             "uid" => $row['ID'],
+            )
+        );
+
+        foreach ($centerID_info as $key=>$val) {
+            $centerID_arr[$key] = $centerID_info[$key]['CenterID'];
+        }
+        $centerID_arr=implode("; ", $centerID_arr);
 
         $examiner_info =array();
         if (!empty($examiner_check) && !is_null($examiner_check)) {
@@ -85,6 +117,8 @@ class User extends UserPermissions
             }
         }
         // store user data in object property
+        $row['CenterID'] =$centerID_arr;
+//print_r($centerID_arr);
         $row['examiner'] =$examiner_info;
         $obj->userInfo   = $row;
         return $obj;
