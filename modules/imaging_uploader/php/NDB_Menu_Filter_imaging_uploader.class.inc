@@ -342,7 +342,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         ///////////////////////////////////////////////////////////////////////
         /////////Validate the advanced Options only if it's not a Phantom//////
         ///////////////////////////////////////////////////////////////////////
-        if ($args['values']['IsPhantom']=='N') {
+//        if ($args['values']['IsPhantom']=='N') {
             ///////////////////////////////////////////////////////////////////////
             ////////////// make sure the advanced options are filled out///////////
             ///////////////////////////////////////////////////////////////////////
@@ -393,7 +393,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
                                     "to return to the Imaging Uploader module";
                 }
             }
-        }
+//        }
         ///////////////////////////////////////////////////////////////////////
         ////////////// Checks to see if the file is of type////////////////////
         //////////////.gz, .zip or .tgz////////////////////////////////////////
@@ -456,7 +456,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         ///////////////////////////////////////////////////////////////////////
         /////Get the pscid, candid and visit_label/////////////////////////////
         ///////////////////////////////////////////////////////////////////////
-        if ($args['values']['IsPhantom']=='N') {
+//        if ($args['values']['IsPhantom']=='N') {
             if ((!empty($args['values']['CandID']))
                 && (!empty($args['values']['PSCID']))
                 &&(!empty($args['values']['Visit_label']))
@@ -477,7 +477,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
                     )
                 );
             }
-        }
+//        }
         //////////////////////////////////////////////////////////////////
         ///Get the directory to which the temp file has been moved to/////
         /// MRI_upload Incoming directory/////////////////////////////////
