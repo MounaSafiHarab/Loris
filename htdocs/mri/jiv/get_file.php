@@ -104,9 +104,10 @@ case 'nii.gz':
     $MimeType         = "application/x-nifti-gz";
     $DownloadFilename = basename($File);
     break;
-case 'png':
-    $FullPath = $imagePath . '/' . $File;
-    $MimeType = "image/png";
+case 'log':
+//    $FullPath = $mincPath . '/' . $File . '_MC';
+    $FullPath = $File . '_MC';
+    $MimeType = "text/plain";
     break;
 case 'jpg':
     $FullPath = $imagePath . '/' . $File;

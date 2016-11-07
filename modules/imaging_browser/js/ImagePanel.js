@@ -554,6 +554,37 @@ var ImageQCCommentsButton = React.createClass({
     }
 });
 
+var fMRIMotionButton = React.createClass({
+    displayName: 'fMRIMotionButton',
+
+    openWindowHandler: function openWindowHandler(e) {
+        e.preventDefault();
+        window.open(this.props.BaseURL + "/imaging_browser/ajax/get_motion_line_data.php?fileID=" + this.props.FileID, "feedback_mri", "width=500,height=800,toolbar=no,location=no," + "status=yes,scrollbars=yes,resizable=yes");
+    },
+    render: function render() {
+        if (!this.props.FileID || this.props.FileID === '') {
+            return React.createElement('span', null);
+        }
+        return React.createElement(
+            'a',
+            { className: 'btn btn-default',
+                href: '#noID',
+                onClick: this.openWindowHandler
+            },
+            React.createElement(
+                'span',
+                { className: 'text-default' },
+                React.createElement('span', { className: 'glyphicon glyphicon-stats' }),
+                React.createElement(
+                    'span',
+                    { className: 'hidden-xs' },
+                    'fMRI Motion'
+                )
+            )
+        );
+    }
+});
+
 var LongitudinalViewButton = React.createClass({
     displayName: 'LongitudinalViewButton',
 
@@ -593,6 +624,9 @@ var ImageDownloadButtons = React.createClass({
             'div',
             { className: 'row mri-second-row-panel col-xs-12' },
             React.createElement(ImageQCCommentsButton, { FileID: this.props.FileID,
+                BaseURL: this.props.BaseURL
+            }),
+            React.createElement(fMRIMotionButton, { FileID: this.props.FileID,
                 BaseURL: this.props.BaseURL
             }),
             React.createElement(DownloadButton, { FileName: this.props.Fullname,
@@ -737,3 +771,59 @@ var ImagePanel = React.createClass({
     }
 });
 var RImagePanel = React.createFactory(ImagePanel);
+
+function formatLineData(data) {
+    "use strict";
+    var processedData = new Array();
+    var labels = new Array();
+    labels.push('x');
+    for (var i in data.labels) {
+        labels.push(data.labels[i]);
+    }
+    processedData.push(labels);
+    for (var i in data.datasets) {
+        var dataset = new Array();
+        dataset.push(data.datasets[i].name);
+        processedData.push(dataset.concat(data.datasets[i].data));
+    }
+    return processedData;
+}
+
+// AJAX to get scan line chart data
+$.ajax({
+    url: loris.BaseURL + '/imaging_browser/ajax/get_motion_line_data.php',
+    type: 'post',
+    success: function(data) {
+        var scanLineData = formatLineData(data);
+        scanLineChart = c3.generate({
+            bindto: '#scanChart',
+            data: {
+                x: 'x',
+                xFormat: '%m-%Y',
+                columns: scanLineData,
+                type: 'area-spline'
+            },
+            axis: {
+                x: {
+                    type: 'timeseries',
+                    tick: {
+                        format: '%m-%Y'
+                    }
+                },
+                y: {
+                    label: 'Scans'
+                }
+            },
+            zoom: {
+                enabled: true
+            },
+            color: {
+                pattern: siteColours
+            }
+        });
+    },
+    error: function(xhr, desc, err) {
+        console.log(xhr);
+        console.log("Details: " + desc + "\nError:" + err);
+    }
+});
