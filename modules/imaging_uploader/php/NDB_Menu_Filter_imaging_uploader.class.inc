@@ -330,6 +330,9 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         $dicom_archive_settings = $config->getSetting(
             'dicom_archive'
         );
+        $phant_name_like_cand = $config->getSetting(
+            'PhantNameLikeCand'
+        );
         $corect_name            = $dicom_archive_settings['patientNameRegex'];
         $header_patient_name    = array();
         $file_name = $file->fileInfo['name'];
@@ -342,7 +345,9 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         ///////////////////////////////////////////////////////////////////////
         /////////Validate the advanced Options only if it's not a Phantom//////
         ///////////////////////////////////////////////////////////////////////
-//        if ($args['values']['IsPhantom']=='N') {
+        if (($args['values']['IsPhantom']=='N') || 
+           (($args['values']['IsPhantom']=='Y') && 
+           ($phant_name_like_cand=='true' || $phant_name_like_cand=='1'))) {
             ///////////////////////////////////////////////////////////////////////
             ////////////// make sure the advanced options are filled out///////////
             ///////////////////////////////////////////////////////////////////////
@@ -393,7 +398,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
                                     "to return to the Imaging Uploader module";
                 }
             }
-//        }
+        }
         ///////////////////////////////////////////////////////////////////////
         ////////////// Checks to see if the file is of type////////////////////
         //////////////.gz, .zip or .tgz////////////////////////////////////////
@@ -456,7 +461,10 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         ///////////////////////////////////////////////////////////////////////
         /////Get the pscid, candid and visit_label/////////////////////////////
         ///////////////////////////////////////////////////////////////////////
-//        if ($args['values']['IsPhantom']=='N') {
+        if (($args['values']['IsPhantom']=='N') || 
+           (($args['values']['IsPhantom']=='Y') && 
+           ($phant_name_like_cand=='true' || $phant_name_like_cand=='1'))) {
+
             if ((!empty($args['values']['CandID']))
                 && (!empty($args['values']['PSCID']))
                 &&(!empty($args['values']['Visit_label']))
@@ -477,7 +485,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
                     )
                 );
             }
-//        }
+        }
         //////////////////////////////////////////////////////////////////
         ///Get the directory to which the temp file has been moved to/////
         /// MRI_upload Incoming directory/////////////////////////////////

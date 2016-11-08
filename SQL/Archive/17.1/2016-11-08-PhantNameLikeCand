@@ -1,0 +1,2 @@
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'PhantNameLikeCand', 'Allows phantoms to have the same naming convention and validation as candidates, i.e. PSCID_CandID_VL', 1, 0, 'boolean', ID, 'Phantom Naming Convention Like Candidates', 24 FROM ConfigSettings WHERE Name="study";
+INSERT INTO Config (ConfigID, Value) SELECT ID, 0 FROM ConfigSettings WHERE Name="PhantNameLikeCand";
