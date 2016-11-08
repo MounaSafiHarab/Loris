@@ -1,5 +1,5 @@
-Header always set Access-Control-Allow-Origin "*"
-Header always set Access-Control-Allow-Headers "*"
+#Header always set Access-Control-Allow-Origin "*"
+#Header always set Access-Control-Allow-Headers "*"
 RewriteEngine on
 Options -Indexes
 
@@ -39,3 +39,9 @@ RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/images/([a-zA-Z0-9_.]+)/header
 RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/images/([a-zA-Z0-9_.]+)/headers/full$ candidates/visits/images/headers/Full.php?CandID=$1&VisitLabel=$2&Filename=$3&PrintHeadersFull=true [L]
 RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/images/([a-zA-Z0-9_.]+)/headers/(.*)$ candidates/visits/images/headers/Specific.php?CandID=$1&VisitLabel=$2&Filename=$3&Header=$4&PrintSpecificHeader=true [L]
 RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/images/([a-zA-Z0-9_.]+)$ candidates/visits/images/Image.php?CandID=$1&VisitLabel=$2&Filename=$3&PrintImageData=true [L]
+
+
+## Notify related
+RewriteRule ^notify$ Notify.php?PrintNotifies=true [L]
+RewriteRule ^notify(/)$ Notify.php?PrintNotifies=true [L]
+RewriteRule ^notify/([0-9]+)$ Notify.php?ID=$1&PrintNotifies=true [L]
