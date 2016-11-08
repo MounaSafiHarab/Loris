@@ -1077,6 +1077,10 @@ class Utility
     {
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
+        $config    = NDB_Config::singleton();
+        $phant_name_like_cand = $config->getSetting(
+            'PhantNameLikeCand'
+        );
 
         if ($projectID != null) {
             $ExtraProject_Criteria
@@ -1084,12 +1088,21 @@ class Utility
         } else {
             $ExtraProject_Criteria ='';
         }
+
+        if ($phant_name_like_cand == 'true' || $phant_name_like_cand=='1') {
+            $ExtraEntityType_Criteria ='';
+        } else {
+            $ExtraEntityType_Criteria
+                = ' AND c.Entity_type != \'Scanner\' ';
+        }
+
         $query       = "SELECT DISTINCT Visit_label FROM session s
             JOIN candidate c ON (s.CandID = c.Candid)
             JOIN psc ON (s.CenterID = psc.CenterID)
             WHERE c.Active = 'Y'
             AND s.Active = 'Y'
             AND psc.CenterID!= '1'
+            $ExtraEntityType_Criteria
             $ExtraProject_Criteria ORDER BY Visit_label";
         $visitlabels = $db->pselect($query, array());
         $visits      = array();
