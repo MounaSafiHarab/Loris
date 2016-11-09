@@ -666,7 +666,26 @@ print_r($values);
                    $editor->getData('CenterID') => $editor->getData('Site'),
                   );
         }
-        $this->addSelect('CenterID', 'Site', $siteOptions, array("multiple"));
+//        $this->addSelect('CenterID', 'Site', $siteOptions, array("multiple"));
+
+            $DB      =& Database::singleton();
+            $aliases = $DB->pselect("SELECT Name, CenterID, Alias FROM psc ", array());
+
+            foreach ($aliases as $row) {
+                $group[] = $this->createCheckbox(
+                    $row['Alias'],
+                    $row['Name'],
+                    array()
+                );
+            }
+            $this->addGroup(
+                $group,
+                'CenterID',
+                'Site',
+                $this->_GUIDelimiter,
+                false
+            );
+            unset($group);
 
         if ($editor->hasPermission('examiner_multisite')) {
             //get site aliases

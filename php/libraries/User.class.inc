@@ -65,12 +65,12 @@ class User extends UserPermissions
             LEFT JOIN psc ON (user_psc_rel.CenterID=psc.CenterID)
             WHERE users.UserID = :UID
             GROUP BY users.ID";
-
 /*
             $query = "SELECT users.*, psc.Name AS Site FROM users
             LEFT JOIN psc ON (users.centerID=psc.CenterID)
             WHERE users.UserID = :UID";
 */
+
         $row = $DB->pselectRow($query, array('UID' => $username));
 
 /*
