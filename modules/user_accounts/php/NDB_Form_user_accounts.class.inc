@@ -86,6 +86,8 @@ print_r ("Defaults are:");
 print_r ("\n");
 print_r ($defaults['Site']);
 print_r ("\n");
+print_r ($defaults['CenterID']);
+print_r ("\n");
             // remove the password hash
             unset($defaults['Password_md5']);
 
@@ -112,6 +114,15 @@ print_r ("\n");
             $defaults['Country']     = htmlspecialchars($defaults['Country']);
             $defaults['Fax']         = htmlspecialchars($defaults['Fax']);
             $defaults['examiner']    = $defaults['examiner'];
+            $defaults['CenterID']    = $defaults['CenterID'];
+            $defaults['Site']    = $defaults['Site'];
+
+            // set the user's site defaults
+           // foreach ($defaults['CenterID'] as $cid=>$vals) {
+                $defaults['us_'.$cid] = 'on';
+                $defaults['CenterID'] = 'on';
+print_r($defaults['CenterID']);
+           // }
 
             foreach ($defaults['examiner'] as $cid=>$vals) {
                 //sets pending approval info
@@ -272,8 +283,8 @@ print_r ("\n");
             );
 
             // Center was not previously added
-            if (empty($result) || is_null($result)) {
-print_r ("In empty loop");
+            if (empty($result) || is_null($result) || (!(in_array($val, $us_prev_sites)))) {
+print_r ("In empty or NOT in_array loop");
 print_r ("\n");
                     $DB->insert(
                         'user_psc_rel',
@@ -288,21 +299,7 @@ print_r ("\n");
 print_r ("$val");
 print_r ("\n");
                 unset($values[$key]);
-            } elseif (!(in_array($val, $us_prev_sites))) {
-print_r ("In NOT in_array loop");
-print_r ("\n");
-print_r ("$val");
-print_r ("\n");
-                    // insert not_in_array value                    
-                    $DB->insert(
-                        'user_psc_rel',
-                        array(
-                         'UserID'    => $uid,
-                         'CenterID'      => $val,
-                        )
-                    );
-
-            }
+            } 
         }
         // Delete all entries from user_psc_rel in 
         // previous and not in current sites
@@ -329,7 +326,7 @@ print_r ("\n");
                 );
             }
 
-//          unset($values[$key]);
+          unset($values[$key]);
         }
 
         //END MULTI-SITE
@@ -352,7 +349,6 @@ print_r ("\n");
         foreach ($prev_sites as $row=>$center) {
             array_push($ex_prev_sites, $center['centerID']);
         }
-print_r($values);
         foreach ($values as $k=>$v) {
             //examiner fields
             if (preg_match("/^ex_[0-9]+$/", $k)) {
@@ -431,8 +427,16 @@ print_r($values);
             $success = User::insert($set);
             $user    = User::factory($set['UserID']);
         } else {
+print_r("In the update user loop");
+print_r("\n");
             // update the user
             $user    = User::factory($this->identifier);
+print_r($this->identifier);
+print_r("\n");
+print_r($user);
+print_r("\n");
+print_r($set);
+print_r("\n");
             $success = $user->update($set);
         }
 
@@ -673,8 +677,8 @@ print_r($values);
 
             foreach ($aliases as $row) {
                 $group[] = $this->createCheckbox(
+                    'us_'.$row['CenterID'],
                     $row['Alias'],
-                    $row['Name'],
                     array()
                 );
             }

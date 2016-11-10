@@ -45,18 +45,18 @@ class User extends UserPermissions
     {
         $obj = new User;
 
-        // right off, set the username and userid
+        // right off, set the username
         $obj->userInfo['UserID'] = $username;
-
-        // get the user's permissions
-        $success = $obj->select($username);
 
         // create DB object
         $DB =& Database::singleton();
 
+        // get the user's permissions
+        $success = $obj->select($username);
+
         // get user data from database
 /** WITH RIDA
-*/
+
             $query = "SELECT users.*,
             GROUP_CONCAT(psc.Name SEPARATOR '; ') AS Site,
             psc.Name
@@ -65,11 +65,11 @@ class User extends UserPermissions
             LEFT JOIN psc ON (user_psc_rel.CenterID=psc.CenterID)
             WHERE users.UserID = :UID
             GROUP BY users.ID";
-/*
+*/
             $query = "SELECT users.*, psc.Name AS Site FROM users
             LEFT JOIN psc ON (users.centerID=psc.CenterID)
             WHERE users.UserID = :UID";
-*/
+
 
         $row = $DB->pselectRow($query, array('UID' => $username));
 
@@ -117,8 +117,8 @@ print_r($row);
             }
         }
         // store user data in object property
-        $row['CenterID'] =$centerID_arr;
-//print_r($centerID_arr);
+//        $row['CenterID'] =$centerID_arr;
+print_r($centerID_arr);
         $row['examiner'] =$examiner_info;
         $obj->userInfo   = $row;
         return $obj;
@@ -159,6 +159,11 @@ print_r($row);
         // create DB object
         $DB =& Database::singleton();
 
+        $success = $DB->insert(
+            'user_psc_rel',
+            array('CenterID' => $this->userInfo['CenterID']),
+            array('UserID' => $this->userInfo['ID'])
+        );
         $success = $DB->insert('users', $set);
 
         return true;
@@ -178,11 +183,26 @@ print_r($row);
         // create DB object
         $DB =& Database::singleton();
 
+print_r("CenterID is: ");
+print_r("\n");
+print_r($this->userInfo['CenterID']);
+print_r("\n");
+print_r("ID is: ");
+print_r("\n");
+print_r($this->userInfo['ID']);
+print_r("\n");
+        $success = $DB->update(
+            'user_psc_rel',
+            array('CenterID' => $this->userInfo['CenterID']),
+            array('UserID' => $this->userInfo['ID'])
+        );
+
         $success = $DB->update(
             'users',
             $set,
             array('UserID' => $this->userInfo['UserID'])
         );
+
 
         return true;
     }
