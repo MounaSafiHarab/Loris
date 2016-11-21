@@ -14,7 +14,8 @@ class NDB_Menu_timepoint_list extends NDB_Menu
         $candidate =& Candidate::singleton($_REQUEST['candID']);
 
         // check user permissions
-    	if ($user->hasPermission('access_all_profiles') || $user->getData('CenterID') == $candidate->getData('CenterID')) {
+//    	if ($user->hasPermission('access_all_profiles') || $user->getData('CenterID') == $candidate->getData('CenterID')) {
+        if ($user->hasPermission('access_all_profiles') || (in_array($candidate->getData('CenterID'), $user->getData('SiteID')))) {
             return true;
         }
 
