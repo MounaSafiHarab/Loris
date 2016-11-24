@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS `NotifyAPI` (
     `CandID` varchar(25) NOT NULL,
     `PSCID` varchar(256) NOT NULL,
     `Event` varchar(25) NOT NULL,
-    `SourceIP` varchar(12) NOT NULL,
+    `SourceIP` varchar(15) NOT NULL,
     `Status` varchar(8) NOT NULL,
     PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -26,4 +26,4 @@ UNLOCK TABLES;
 -- to config
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'AcceptedExternalIP', 'Allows these comma separated IP addresses to issue a GET or a POST request', 1, 0, 'text', ID, 'Accepted IP addresses', 24 FROM ConfigSettings WHERE Name="study";
  
-INSERT INTO Config (ConfigID, Value) SELECT ID, "132.206.37.36, 132.206.37.36" FROM ConfigSettings WHERE Name="AcceptedEXternalIP";
+INSERT INTO Config (ConfigID, Value) SELECT ID, "" FROM ConfigSettings WHERE Name="AcceptedEXternalIP";

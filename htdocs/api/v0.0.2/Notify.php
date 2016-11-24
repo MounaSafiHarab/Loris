@@ -137,9 +137,7 @@ class Notify extends APIBase
 
         if (isset($this->RequestData['Event'])) {
             $data = $this->RequestData;
-error_log ("In POST: " . $data . "\n");
             if ($data === null) {
-error_log ("In NULL data loop \n");
                 $this->header("HTTP/1.1 400 Bad Request");
                 $this->safeExit(0);
             }
@@ -147,15 +145,13 @@ error_log ("In NULL data loop \n");
             //validate client IP address 
 	    // a list of vailid SourceIP's should be read from a config table not hard coded
             $ip = $this->get_ip_address();
-error_log("IP is " . $ip . "\n");
             $accepted_ip = $config->getSetting(
                 'AcceptedExternalIP'
             );
+            $accepted_ip = explode(', ',$accepted_ip);
 //            if (!in_array($ip, ['127.0.0.1', '172.24.15.89', '123.321.123.321'])) 
-//            if (!in_array($ip, ['132.206.37.36'])) 
             if (!in_array($ip, $accepted_ip)) 
             {  
-error_log("In the wrong IP loop");
                 $this->header("HTTP/1.1 400 Bad Request");
                 $this->safeExit(0);
             }
