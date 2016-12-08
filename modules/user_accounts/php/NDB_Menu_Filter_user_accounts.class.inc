@@ -17,12 +17,10 @@ class NDB_Menu_Filter_user_accounts extends NDB_Menu_Filter
     {
         $user =& User::singleton();
         // the base query
-//       $query = " FROM users LEFT JOIN psc ON (psc.CenterID = users.CenterID) WHERE 1=1 ";
         $query = " FROM users LEFT JOIN user_psc_rel ON (user_psc_rel.UserID=users.ID)
             LEFT JOIN psc ON (user_psc_rel.CenterID=psc.CenterID)
             WHERE 1=1";
         if (!$user->hasPermission('user_accounts_multisite')) {
-            //$query .= " AND users.CenterID = '" . $user->getData('CenterID') . "' ";
             $query .= " AND user_psc_rel.CenterID=";
             $site_arr = $user->getCenterID();
             $last_key = end(array_keys($site_arr));
@@ -67,9 +65,7 @@ class NDB_Menu_Filter_user_accounts extends NDB_Menu_Filter
         }
         else {
             // allow only to view own site data
-/*            $site =& Site::singleton($user->getData('CenterID'));
-            $list_of_sites = array($user->getData('CenterID') => $user->getData('Site'));*/
-            $site_arr = $user->getData('SiteID');
+            $site_arr = $user->getData('CentersID');
             foreach ($site_arr as $key=>$val) {
                 $site[$key] = & Site::singleton($val);
                 $list_of_sites[$val] = $site[$key]->getCenterName();
