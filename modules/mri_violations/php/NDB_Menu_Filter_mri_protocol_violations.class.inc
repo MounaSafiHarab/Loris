@@ -147,7 +147,7 @@ class NDB_Menu_Mri_Protocol_Violations extends NDB_Menu_Filter
             slice_thickness_range, FoV_x_range, FoV_y_range, 
             xspace_range, yspace_range, zspace_range, 
             xstep_range, ystep_range, zstep_range, 
-            time_range, series_description_regex 
+            time_range, b_values, series_description_regex 
             FROM mri_protocol as p 
             LEFT JOIN mri_scan_type as s 
             ON p.Scan_type=s.ID", array()

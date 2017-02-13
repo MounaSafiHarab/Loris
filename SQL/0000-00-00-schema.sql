@@ -677,6 +677,7 @@ CREATE TABLE `mri_protocol` (
   `ystep_range` varchar(255) default NULL,
   `zstep_range` varchar(255) default NULL,
   `time_range` varchar(255) default NULL,
+  `b_values` varchar(255) default NULL,
   `series_description_regex` varchar(255) default NULL,
   PRIMARY KEY  (`ID`),
   KEY `FK_mri_protocol_1` (`ScannerID`),
@@ -737,6 +738,7 @@ INSERT INTO `mri_scan_type` VALUES
     (60,'csf_matter'),
     (61,'nlr_masked'),
     (62,'pve'),
+    (63,'b0_map'),
     (999,'unknown'),
     (1000,'NA');
 /*!40000 ALTER TABLE `mri_scan_type` ENABLE KEYS */;

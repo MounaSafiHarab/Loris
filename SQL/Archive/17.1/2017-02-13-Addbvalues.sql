@@ -1,0 +1,2 @@
+ALTER TABLE mri_protocol ADD b_values VARCHAR(255) DEFAULT NULL;
+
