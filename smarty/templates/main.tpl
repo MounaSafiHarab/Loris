@@ -166,6 +166,17 @@
                         </li>
 -->
                         <li class="dropdown">
+                            <a href="#" data-toggle="tooltip" style="padding-right:25px;">
+All User Sites Count: {$userNumSites} <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                    <font color="white">
+                                    <li>
+                                        {$user.Sites}<br/>
+                                    </li>
+                                    </font>
+<!--
+                        <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding-right:155px;">
                                 All 
 User Sites <b class="caret"></b>
@@ -180,6 +191,8 @@ User Sites <b class="caret"></b>
                                     </li>
                                     </font>
                                 {/section}
+-->
+
 <!--
                                 {foreach from={";"|explode:$user.Sites} item=status key=name}
                                 <li>
