@@ -203,7 +203,7 @@ class NDB_Config
     }
 
     /**
-     * Attempts to determine the site of the user currently logged in and uses
+     * Attempts to determine the sites of the user currently logged in and uses
      * that to get site specific settings and override study defaults,
      * building the _siteSettings property
      *
@@ -222,7 +222,7 @@ class NDB_Config
             $this->_siteSettings =& $this->_settings;
         } else {
             $user     =& User::singleton($username);
-            $siteName = Utility::getCleanString($user->getSiteName());
+            $siteName = Utility::getCleanString($user->getSiteNames());
             if (isset($this->_settings['sites'][$siteName])
                 && is_array($this->_settings['sites'][$siteName])
             ) {
