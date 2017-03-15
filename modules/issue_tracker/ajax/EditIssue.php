@@ -232,7 +232,7 @@ function validateInput($values)
 
         $user =& User::singleton();
         if (!$user->hasPermission('access_all_profiles')) {
-            $params['CenterID'] = implode(',', $user->getCenterID());
+            $params['CenterID'] = implode(',', $user->getCenterIDs());
             $query .= " AND FIND_IN_SET(CenterID,:CenterID)";
         }
 
@@ -509,7 +509,7 @@ function getIssueFields()
             array()
         );
     } else {
-        $CenterID = implode(',', $user->getCenterID());
+        $CenterID = implode(',', $user->getCenterIDs());
         $DCCID    = $db->pselectOne(
             "SELECT CenterID from psc where Name='DCC'",
             array()
