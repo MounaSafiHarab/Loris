@@ -94,11 +94,14 @@ try {
     $tpl_data['hasHelpEditPermission']        = $user->hasPermission('context_help');
     $tpl_data['user']['user_from_study_site'] = $oneIsStudySite;
     $tpl_data['userNumSites']         = count($site_arr);
-    $tpl_data['user']['SitesTooltip'] = str_replace(
-        ";",
-        "\n",
-        $user->getData('Sites')
-    );
+
+    // Build site HTML
+    $sites = explode(";", $user->getData('Sites'));
+    $siteList = array_map(function($site) {
+        return "<li><a href='#'>$site</a></li>";
+    }, $sites);
+    $tpl_data['user']['siteList'] = implode($siteList);
+
 } catch(Exception $e) {
     $tpl_data['error_message'][] = "Error: " . $e->getMessage();
 }

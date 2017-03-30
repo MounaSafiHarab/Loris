@@ -159,10 +159,13 @@
                                 <img width=17 src="{$baseurl}/images/help.gif">
                             </a>
                         </li>
-                        <li class="nav">
-                            <a href="#" data-toggle="tooltip" title="{$user.SitesTooltip}">
-                                Site Affiliations: {$userNumSites} 
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                              Site Affiliations: {$userNumSites}
                             </a>
+                            <ul class='dropdown-menu'>
+                              {$user.siteList}
+                            </ul>
                         </li>
 
                         <li class="dropdown">
