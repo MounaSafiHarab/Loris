@@ -98,15 +98,19 @@ class Imaging_Session_ControlPanel
         }
 
         // To enable DICOM download: Add pair: tarchiveID, ArchiveLocation
-        $qresult = $DB->pselectRow(
+        $qresult = $DB->pselect(
             "SELECT TarchiveID, ArchiveLocation
             FROM tarchive
             WHERE PatientName LIKE $ID",
             $params
         );
-        $subjectData['tarchiveids']   = $qresult['TarchiveID'];
-        $subjectData['tarchiveidLoc'] =  (empty($qresult['ArchiveLocation'])) ? ""
-                                         : $qresult['ArchiveLocation'];
+
+        $tarIDTotarLoc=array();
+        foreach($qresult as $k=>$v) {
+            $tarchiveID = $v['TarchiveID'];
+            $tarIDTotarLoc[$tarchiveID]=$v['ArchiveLocation'];
+        }
+        $subjectData['tarchiveIDLoc']   = $tarIDTotarLoc;
 
         $config =& NDB_Config::singleton();
 
