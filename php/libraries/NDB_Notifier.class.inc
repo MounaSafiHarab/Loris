@@ -91,6 +91,7 @@ class NDB_Notifier extends NDB_Notifier_Abstract
 
             if ($this->notifier['ID'] === $uid) {
                 // TODO send confirmation email instead
+                print_r($this->tpl_data);
             } else {
                 Email::send(
                     $email,
